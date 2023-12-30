@@ -17,6 +17,7 @@
 # Package Includes
 #==============================================================================
 from PIL import Image
+from math import ceil
 #import numpy as np
 
 
@@ -42,10 +43,26 @@ class CurtainScene:
 
 
     #--------------------------------------------------------------------------
+    # Render Frames for a certain duration
+    #--------------------------------------------------------------------------
+    def run_for_time(self, time_secs):
+
+        steps = ceil(time_secs / self.time_step_s)
+        print("running ", steps, "steps")
+
+        for _ in range(steps):
+
+
+
+            self.render_frame()
+        
+
+
+    #--------------------------------------------------------------------------
     # Render the Current Frame
     #--------------------------------------------------------------------------
     def render_frame(self):
-        print("render_frame")
+        #print("render_frame")
 
         frame_pixels = [ [[0, 0, 0, 255]] * self.width for _ in range(self.height)]
 
@@ -69,11 +86,12 @@ class CurtainScene:
 
                 #print(cur_r, cur_g, cur_b)
 
-                frame_pixels[cur_y][cur_x] = [cur_r, cur_g, cur_b, 0]
+                frame_pixels[cur_y][cur_x] = [cur_r, cur_g, cur_b, 255]
 
 
         #fully unroll the frame
-        framedat = [element for row in [element for row in frame_pixels for element in row] for element in row]
+        flat_pixels = [element for row in frame_pixels for element in row]
+        framedat = [element for row in flat_pixels for element in row]
                 
         frame_image = Image.frombytes("RGBA", (self.width, self.height), bytes(framedat) )
 
@@ -84,12 +102,19 @@ class CurtainScene:
     #--------------------------------------------------------------------------
     # Export the current frame image array as a gif
     #--------------------------------------------------------------------------
-    def export_gif(self, output_path, duration=time_step_s*1000, loop=0):
+    def export_gif(self, output_path, duration=200, loop=0):
+
+        print("exporting ", len(self.frames), "frames", duration)
+
+        # for i, frame in enumerate(self.frames):
+        #     frame.save(f"c:/temp/frame_{i}.png")
 
         # Save the animated GIF
         self.frames[0].save(
             output_path,
             save_all=True,
+            format='gif', 
+            optimize=False,
             append_images=self.frames[1:],
             duration=duration,
             loop=loop,
@@ -109,12 +134,22 @@ if __name__ == "__main__":
 
     part = CurtainParticle(0, 0)
     sprite.particles.append(part)
-    part = CurtainParticle(59, 25)
-    sprite.particles.append(part)
-
     scene.sprites.append( sprite )
 
-    scene.render_frame()
+    scene.run_for_time(.6)
+
+    part = CurtainParticle(5, 5)
+    sprite.particles.append(part)
+    scene.sprites.append( sprite )
+
+    scene.run_for_time(.4)
+
+    part = CurtainParticle(30, 13)
+    sprite.particles.append(part)
+    scene.sprites.append( sprite )
+
+
+    scene.run_for_time(1)
 
     scene.export_gif(r"c:/temp/govee.gif")
     

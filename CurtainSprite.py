@@ -36,11 +36,11 @@ class CurtainSprite:
     # Pixelize all Particles in the Sprite
     #--------------------------------------------------------------------------
     def pixelize(self):
-        print("Pixelizing Sprite")
+        #print("Pixelizing Sprite")
 
         pixels = []
         for particle in self.particles:
-            print(particle.pixelize())
+            #print(particle.pixelize())
             pixels.append( particle.pixelize() )
         
         return pixels
