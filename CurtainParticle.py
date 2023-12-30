@@ -16,7 +16,7 @@
 #==============================================================================
 # Package Includes
 #==============================================================================
-
+from math import floor
 
 #==============================================================================
 # Project Includes
@@ -30,9 +30,10 @@
 class CurtainParticle:
 
     position = [0, 0, 0]
-    color = [255, 255, 255, 255]
+    color = [255, 255, 255]
+    alpha = 255
 
-    fade_rate = 0.0  # Percent per Second
+    fade_rate = 0.333  # Percent per Second (normalized)
 
 
     #--------------------------------------------------------------------------
@@ -47,8 +48,26 @@ class CurtainParticle:
     #--------------------------------------------------------------------------
     def pixelize(self):
 
-        return [self.position, self.color]
+        color_w_alpha = [floor(element) for element in self.color]
+        color_w_alpha.append( self.alpha )
 
+        return [self.position, color_w_alpha]
+
+
+    def apply_fade(self, time_s ):
+        
+        fade_mult = 1-(self.fade_rate * time_s);
+        print(fade_mult)
+    
+        self.color = [element * fade_mult for element in self.color]
+        print(self.color)
+
+
+    #--------------------------------------------------------------------------
+    # Performs the Pixel Time Step
+    #--------------------------------------------------------------------------
+    def do_timestep(self, time_s ):
+        self.apply_fade(time_s)
 
 
 
@@ -61,3 +80,5 @@ if __name__ == "__main__":
     particle = CurtainParticle()
 
     print( particle.pixelize() )
+
+    particle.do_timestep(0.200)

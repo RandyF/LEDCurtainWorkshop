@@ -52,7 +52,8 @@ class CurtainScene:
 
         for _ in range(steps):
 
-
+            for sprite in self.sprites:
+                sprite.do_timestep(self.time_step_s)
 
             self.render_frame()
         

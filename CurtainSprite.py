@@ -45,6 +45,13 @@ class CurtainSprite:
         
         return pixels
 
+    #--------------------------------------------------------------------------
+    # Performs the Pixel Time Step
+    #--------------------------------------------------------------------------
+    def do_timestep(self, time_s ):
+
+        for particle in self.particles:
+            particle.do_timestep(time_s)
 
 
 #==============================================================================
