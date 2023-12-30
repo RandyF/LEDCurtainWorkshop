@@ -1,9 +1,36 @@
+#==============================================================================
+#
+#   Project:    LEDCurtainWorkshop
+#   File:       CurtainScene.py
+#
+#   Author:     Andy Ressa
+#   email:      aressa@angrykitten.com
+#   Created:    20231230
+#
+#   Revisions:
+#   Date        Init    Notes 
+#   20231230    AJR     Initial Draft
+#
+#==============================================================================
+
+#==============================================================================
+# Package Includes
+#==============================================================================
 from PIL import Image
 #import numpy as np
 
+
+#==============================================================================
+# Project Includes
+#==============================================================================
 from CurtainSprite import CurtainSprite
 from CurtainParticle import CurtainParticle
 
+
+#==============================================================================
+# Curtain Scene Class
+# Manages Sprites and Renders Images
+#==============================================================================
 class CurtainScene:
 
     width, height = 60, 26
@@ -14,28 +41,24 @@ class CurtainScene:
     frames = []
 
 
-    def get_blank_frame(self):
-        list_array = [ [[0, 0, 0, 255]] * self.width for _ in range(self.height)]
-
-        print(len(list_array[0]))
-        return list_array
-
-
+    #--------------------------------------------------------------------------
+    # Render the Current Frame
+    #--------------------------------------------------------------------------
     def render_frame(self):
         print("render_frame")
 
-        frame_pixels = self.get_blank_frame()
+        frame_pixels = [ [[0, 0, 0, 255]] * self.width for _ in range(self.height)]
 
         for sprite in self.sprites:
             pixels = sprite.pixelize()
 
             for (pos_x, pos_y, pos_z), (c_r, c_g, c_b, c_a) in pixels:
 
-                print( (pos_x, pos_y, pos_z), (c_r, c_g, c_b, c_a) )
+                #print( (pos_x, pos_y, pos_z), (c_r, c_g, c_b, c_a) )
 
                 cur_y = self.height-1-pos_y
                 cur_x = pos_x
-                print(cur_x, cur_y)
+                #print(cur_x, cur_y)
 
                 cur_r, cur_g, cur_b, cur_a = frame_pixels[cur_y][cur_x]
                 #print(cur_r, cur_g, cur_b, cur_a)
@@ -58,6 +81,9 @@ class CurtainScene:
 
 
 
+    #--------------------------------------------------------------------------
+    # Export the current frame image array as a gif
+    #--------------------------------------------------------------------------
     def export_gif(self, output_path, duration=time_step_s*1000, loop=0):
 
         # Save the animated GIF
@@ -71,6 +97,9 @@ class CurtainScene:
 
 
 
+#==============================================================================
+# Stand-Alone Runtime
+#==============================================================================
 if __name__ == "__main__":
     print("Curtain Scene Test")
 
