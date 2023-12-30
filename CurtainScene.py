@@ -19,6 +19,7 @@
 from PIL import Image
 from math import ceil
 from random import random, randint
+from copy import copy
 #import numpy as np
 
 
@@ -78,6 +79,9 @@ class CurtainScene:
                 cur_y = self.height-1-pos_y
                 cur_x = pos_x
                 #print(cur_x, cur_y)
+
+                if cur_y not in range(self.height) or cur_y not in range(self.width):
+                    continue
 
                 cur_r, cur_g, cur_b, cur_a = frame_pixels[cur_y][cur_x]
                 #print(cur_r, cur_g, cur_b, cur_a)
@@ -142,9 +146,10 @@ if __name__ == "__main__":
 
         scene.run_for_time(step_time)
 
-        if random() > 0.9:
-            part = CurtainParticle(randint(0,59), randint(0,25))
-            sprite.particles.append(part)
+        if random() > 0.5:
+            part = None
+            part = CurtainParticle(randint(0,59), randint(0,30))
+            sprite.particles.append( copy(part) )
 
 
     scene.export_gif(r"c:/temp/govee.gif")
