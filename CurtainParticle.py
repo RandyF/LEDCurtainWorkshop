@@ -54,13 +54,17 @@ class CurtainParticle:
         return [self.position, color_w_alpha]
 
 
+    #--------------------------------------------------------------------------
+    # Applies fade to the COLOR of the particle
+    # TODO: consider using alpha, but that's not implemented at a higher level
+    #--------------------------------------------------------------------------
     def apply_fade(self, time_s ):
         
         fade_mult = 1-(self.fade_rate * time_s);
-        print(fade_mult)
+        #print(fade_mult)
     
         self.color = [element * fade_mult for element in self.color]
-        print(self.color)
+        #print(self.color)
 
 
     #--------------------------------------------------------------------------

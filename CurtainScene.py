@@ -18,6 +18,7 @@
 #==============================================================================
 from PIL import Image
 from math import ceil
+from random import random, randint
 #import numpy as np
 
 
@@ -48,7 +49,7 @@ class CurtainScene:
     def run_for_time(self, time_secs):
 
         steps = ceil(time_secs / self.time_step_s)
-        print("running ", steps, "steps")
+        #print("running ", steps, "steps")
 
         for _ in range(steps):
 
@@ -132,25 +133,19 @@ if __name__ == "__main__":
     scene = CurtainScene()
 
     sprite = CurtainSprite()
-
-    part = CurtainParticle(0, 0)
-    sprite.particles.append(part)
     scene.sprites.append( sprite )
 
-    scene.run_for_time(.6)
+    step_time = .200
+    total_time = 60.0
 
-    part = CurtainParticle(5, 5)
-    sprite.particles.append(part)
-    scene.sprites.append( sprite )
+    for _ in range( int(total_time/step_time) ):
 
-    scene.run_for_time(.4)
+        scene.run_for_time(step_time)
 
-    part = CurtainParticle(30, 13)
-    sprite.particles.append(part)
-    scene.sprites.append( sprite )
+        if random() > 0.9:
+            part = CurtainParticle(randint(0,59), randint(0,25))
+            sprite.particles.append(part)
 
-
-    scene.run_for_time(1)
 
     scene.export_gif(r"c:/temp/govee.gif")
     
