@@ -37,13 +37,13 @@ class CurtainParticle:
 
     physics = []
 
-    fade_rate = 0.333  # Percent per Second (normalized)
+    fade_rate = None # Percent per Second (normalized)
 
 
     #--------------------------------------------------------------------------
     # Init Constructor
     #--------------------------------------------------------------------------
-    def __init__(self, position=None, physics=None, color=None, fade=None ):
+    def __init__(self, position=None, physics=None, color=None, fade_rate=None ):
 
         if position is not None and len(position) < 3:
             raise Exception(f"Positition must be [x, y, z]! (gave me {position})")
@@ -55,20 +55,18 @@ class CurtainParticle:
                     raise Exception(f"All Physics must be [x, y, z]! (gave me {newt})")
         self.physics = physics if physics is not None else [ [0.0,0.0,0.0], [0.0,9.8,0.0] ] 
 
-        self.fade = fade if fade is not None else 0
+        self.fade_rate = fade_rate if fade_rate is not None else 0
 
-        if color is not None:
-            print(color)
-            if len(color) < 4:
-
+        if color is not None and len(color) < 4:
                 raise Exception(f"Color must be [r, g, b, a]! (gave me {color})")
         if color is not None:
-            self.color = color[0:2]
+            self.color = color[0:3]
             self.alpha = color[3]
         else:
-            self.color = [128, 128, 255]
+            self.color = [255, 255, 255]
             self.alpha = 255
 
+        #print(f"New Particle colored: {self.color} w/ alpha: {self.alpha}")
 
         #print(f"New particle created @ {self.position}")
 
@@ -96,6 +94,7 @@ class CurtainParticle:
     
         self.color = [element * fade_mult for element in self.color]
         #print(self.color)
+
 
     #--------------------------------------------------------------------------
     # Performs the Pixel Time Step

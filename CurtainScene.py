@@ -97,7 +97,7 @@ class CurtainScene:
                 #print(f"unscaled: {pixel}")
 
                 scaled_pos = [int(pixel[0][0] * scale_x), int(pixel[0][1] * scale_y), int(pixel[0][2]) ]
-                #print(scaled_pos)
+                #print([ scaled_pos, pixel[1] ])
 
                 scaled_pixels.append( [ scaled_pos, pixel[1] ] )
 
