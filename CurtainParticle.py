@@ -10,6 +10,7 @@
 #   Revisions:
 #   Date        Init    Notes 
 #   20231230    AJR     Initial Draft
+#   20231231    AJR     Fixed Physics (mutable objects, learned sumthin' new)
 #
 #==============================================================================
 
@@ -33,16 +34,28 @@ class CurtainParticle:
     color = [128, 128, 255]
     alpha = 255
 
-    physics = [ [0,-5.0,0], [0,0,0] ]
+    physics = []
 
     fade_rate = 0.333  # Percent per Second (normalized)
 
 
     #--------------------------------------------------------------------------
-    # Pixelize all Particles in the Sprite
+    # Init Constructor
     #--------------------------------------------------------------------------
-    def __init__(self, pos_x = 0, pos_y = 0, pos_z = 0):
-        self.position = [pos_x, pos_y, pos_z]
+    def __init__(self, position=None, physics=None, fade=None ):
+
+        if position is not None and len(position) < 3:
+            raise Exception(f"Positition must be [x, y, z]! (gave me {position})")
+        self.position = position if position is not None else [0, 0, 0]
+
+        if physics is not None:
+            for newt in physics:
+                if len(newt) != 3:
+                    raise Exception(f"All Physics must be [x, y, z]! (gave me {newt})")
+        self.physics = physics if physics is not None else [ [0.0,0.0,0.0], [0.0,9.8,0.0] ] 
+
+        self.fade = fade if fade is not None else 0
+
 
 
     #--------------------------------------------------------------------------
@@ -118,3 +131,5 @@ if __name__ == "__main__":
     particle.do_timestep(0.200)
 
     print( particle.position, particle.pixelize() )
+
+    particle = CurtainParticle([0, 1, 0], physics=[[0, 0, 0], [0, 1]])

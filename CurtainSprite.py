@@ -10,6 +10,7 @@
 #   Revisions:
 #   Date        Init    Notes 
 #   20231230    AJR     Initial Draft
+#   20231231    AJR     Created add_particle Method
 #
 #==============================================================================
 
@@ -30,7 +31,14 @@ from CurtainParticle import CurtainParticle
 #==============================================================================
 class CurtainSprite:
 
-    particles = []
+    particles = None
+
+    #--------------------------------------------------------------------------
+    # Init Constructor
+    #--------------------------------------------------------------------------
+    def __init__(self):
+        self.particles = []
+
 
     #--------------------------------------------------------------------------
     # Pixelize all Particles in the Sprite
@@ -45,6 +53,7 @@ class CurtainSprite:
         
         return pixels
 
+
     #--------------------------------------------------------------------------
     # Performs the Pixel Time Step
     #--------------------------------------------------------------------------
@@ -52,6 +61,11 @@ class CurtainSprite:
 
         for particle in self.particles:
             particle.do_timestep(time_s)
+
+    def add_particle(self, position=None, physics=None, fade=None ):
+
+        new_part = CurtainParticle(position, physics, fade )
+        self.particles.append( new_part )
 
 
 #==============================================================================
@@ -63,9 +77,7 @@ if __name__ == "__main__":
 
     sprite = CurtainSprite()
 
-    part = CurtainParticle(30, 13)
-    sprite.particles.append(part)
-    part = CurtainParticle(32, 16)
-    sprite.particles.append(part)
+    sprite.add_particle([30, 13, 0])
+    sprite.add_particle([32, 16, 0])
 
     print( sprite.pixelize() )

@@ -10,6 +10,7 @@
 #   Revisions:
 #   Date        Init    Notes 
 #   20231230    AJR     Initial Draft
+#   20231231    AJR     Object Init Cleanup
 #
 #==============================================================================
 
@@ -39,9 +40,16 @@ class CurtainScene:
     width, height = 60, 26
     time_step_s = 0.200
 
-    sprites = []
+    sprites = None
+    frames = None
 
-    frames = []
+
+    #--------------------------------------------------------------------------
+    # Init Constructor
+    #--------------------------------------------------------------------------
+    def __init__(self):
+        self.sprites = []
+        self.frames = []
 
 
     #--------------------------------------------------------------------------
@@ -142,15 +150,14 @@ if __name__ == "__main__":
     step_time = .200
     total_time = 60.0
 
+    phsyics_default = [[0, 0, 0], [0, 0, 0]]
+
     for _ in range( int(total_time/step_time) ):
 
         scene.run_for_time(step_time)
 
         if random() > 0.5:
-            part = None
-            part = CurtainParticle(randint(0,59), randint(0,30))
-            sprite.particles.append( copy(part) )
-
+            sprite.add_particle(position=[randint(0,59), randint(0,30), 0], physics=phsyics_default, fade=0.5 )
 
     scene.export_gif(r"c:/temp/govee.gif")
     
