@@ -62,9 +62,13 @@ class CurtainSprite:
         for particle in self.particles:
             particle.do_timestep(time_s)
 
-    def add_particle(self, position=None, physics=None, fade=None ):
 
-        new_part = CurtainParticle(position, physics, fade )
+    #--------------------------------------------------------------------------
+    # Add Particle
+    #--------------------------------------------------------------------------
+    def add_particle(self, position=None, physics=None, color=None, fade=None ):
+
+        new_part = CurtainParticle(position, physics, color, fade )
         self.particles.append( new_part )
 
 

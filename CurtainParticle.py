@@ -11,6 +11,7 @@
 #   Date        Init    Notes 
 #   20231230    AJR     Initial Draft
 #   20231231    AJR     Fixed Physics (mutable objects, learned sumthin' new)
+#                       Allow Particles to be phycially positioned in meters.
 #
 #==============================================================================
 
@@ -30,7 +31,7 @@ from math import floor
 #==============================================================================
 class CurtainParticle:
 
-    position = [0, 0, 0]
+    position = None
     color = [128, 128, 255]
     alpha = 255
 
@@ -42,7 +43,7 @@ class CurtainParticle:
     #--------------------------------------------------------------------------
     # Init Constructor
     #--------------------------------------------------------------------------
-    def __init__(self, position=None, physics=None, fade=None ):
+    def __init__(self, position=None, physics=None, color=None, fade=None ):
 
         if position is not None and len(position) < 3:
             raise Exception(f"Positition must be [x, y, z]! (gave me {position})")
@@ -56,6 +57,21 @@ class CurtainParticle:
 
         self.fade = fade if fade is not None else 0
 
+        if color is not None:
+            print(color)
+            if len(color) < 4:
+
+                raise Exception(f"Color must be [r, g, b, a]! (gave me {color})")
+        if color is not None:
+            self.color = color[0:2]
+            self.alpha = color[3]
+        else:
+            self.color = [128, 128, 255]
+            self.alpha = 255
+
+
+        #print(f"New particle created @ {self.position}")
+
 
 
     #--------------------------------------------------------------------------
@@ -66,9 +82,7 @@ class CurtainParticle:
         color_w_alpha = [floor(element) for element in self.color]
         color_w_alpha.append( self.alpha )
 
-        pos_quant = [floor(element) for element in self.position]
-
-        return [pos_quant, color_w_alpha]
+        return [self.position, color_w_alpha]
 
 
     #--------------------------------------------------------------------------
