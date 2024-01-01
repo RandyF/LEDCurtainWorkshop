@@ -96,7 +96,7 @@ class CurtainParticle:
 
         #print(f"New Particle colored: {self.color} w/ alpha: {self.alpha}")
 
-        print(f"New particle created @ {self.position}    physics: {self.physics}")
+        #print(f"New particle created @ {self.position}    physics: {self.physics}")
 
 
 

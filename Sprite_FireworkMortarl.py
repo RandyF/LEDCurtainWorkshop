@@ -105,7 +105,7 @@ class Sprite_FireworkMortar(CurtainSprite):
     # Pops the Shell to Create Stars
     #--------------------------------------------------------------------------
     def pop_shell(self, position, color=None, num_stars=12, num_rings=3, power=0.3 ):
-        print("POP")
+        #print("POP")
 
         self.add_particle(position=position, rad_physics=[[0,0,0],[0,0,0]], color=[255, 255, 255, 255], fade=2 )
 
@@ -167,36 +167,62 @@ class Sprite_FireworkMortar(CurtainSprite):
 #==============================================================================
 # Stand-Alone Runtime
 #==============================================================================
-if __name__ == "__main__":
-    from CurtainScene import CurtainScene
-    from Sprite_Sparkles import Sprite_Sparkles
 
-    print("Sprite_FireworkMortar Test")
+def CreateScene(file=r"c:/temp/govee.gif", fw_range=None):
 
     step_time = .200
-    total_time = 60.0
+    total_time = 8.0
 
     scene = CurtainScene(panels=1)
 
     sparkles = Sprite_Sparkles( size_m=scene.phys_size )
     scene.sprites.append( sparkles )
 
-    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=1*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
-    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=2*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
-    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=3*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
+#    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=1*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
+#    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=2*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
+#    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=3*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
+#    scene.run_for_time(8)
 
-    scene.run_for_time(5)
+    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
 
+    elapsed = 0
     for _ in range( int(total_time/step_time) ):
 
-        if random() > 0.9:
+        if random() > 0.9 and elapsed < (total_time - 7.0):
             scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
 
-        if random() > 0.8:
+        if random() > 0.85:
             sparkles.add_sparkle()
 
         scene.run_for_time(step_time)
+        elapsed += step_time
+
+    if fw_range is None:
+        scene.export_gif(file)
+        return True
+    else:
+        #print(len(scene.sprites)-1, range(fw_range[0], fw_range[1]))
+        if len(scene.sprites)-1 in range(fw_range[0], fw_range[1]):
+            print("got One!", len(scene.sprites)-1)
+            scene.export_gif(file)
+            return True
+        else:
+            #print("Not Exporting")
+            return False
 
 
-    scene.export_gif(r"c:/temp/govee.gif")
-    
+
+
+if __name__ == "__main__":
+    from CurtainScene import CurtainScene
+    from Sprite_Sparkles import Sprite_Sparkles
+
+    print("Sprite_FireworkMortar Test")
+
+    create_cnt = 0
+    while create_cnt < 10:
+
+        if CreateScene(file=r"c:/temp/govee_%03d.gif" % create_cnt, fw_range=[1,2]):
+            create_cnt += 1
+
+    CreateScene()
