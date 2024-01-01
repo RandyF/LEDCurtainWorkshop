@@ -101,6 +101,8 @@ class CurtainScene:
 
                 scaled_pixels.append( [ scaled_pos, pixel[1] ] )
 
+        #print(scaled_pixels)
+
         return scaled_pixels
 
 

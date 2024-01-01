@@ -34,8 +34,8 @@ from math import floor, sin, cos, pi
 class CurtainParticle:
 
     position = None
-    color = [128, 128, 255]
-    alpha = 255
+    color = None
+    alpha = None
 
     physics = []
 
@@ -49,7 +49,9 @@ class CurtainParticle:
 
         if position is not None and len(position) < 3:
             raise Exception(f"Positition must be [x, y, z]! (gave me {position})")
-        self.position = position if position is not None else [0, 0, 0]
+        self.position = [position[0],position[1],position[2]] if position is not None else [0, 0, 0]
+
+        #print(f"physics: {physics}\nrad_phys: {rad_physics}")
 
         if physics is not None:
             if rad_physics is not None:
@@ -79,7 +81,7 @@ class CurtainParticle:
         else:
             self.physics = [ [0.0,0.0,0.0], [0.0,9.8,0.0] ] 
 
-        print(f"New Particle physics: {self.physics}")
+        #print(f"New Particle physics: {self.physics}")
 
         self.fade_rate = fade_rate if fade_rate is not None else 0
 
@@ -94,7 +96,7 @@ class CurtainParticle:
 
         #print(f"New Particle colored: {self.color} w/ alpha: {self.alpha}")
 
-        #print(f"New particle created @ {self.position}")
+        print(f"New particle created @ {self.position}    physics: {self.physics}")
 
 
 
@@ -127,6 +129,9 @@ class CurtainParticle:
     #--------------------------------------------------------------------------
     def apply_physics(self, time_s):
 
+        #print(self)
+        #print(f"Old Pos: {self.position}   Old Phys: {self.physics} ")
+
         self.position[0] = self.position[0] + self.physics[0][0] * time_s
         self.position[1] = self.position[1] + self.physics[0][1] * time_s
         self.position[2] = self.position[2] + self.physics[0][2] * time_s
@@ -137,6 +142,9 @@ class CurtainParticle:
             self.physics[i][0] = self.physics[i][0] + self.physics[i+1][0] * time_s
             self.physics[i][1] = self.physics[i][1] + self.physics[i+1][1] * time_s
             self.physics[i][2] = self.physics[i][2] + self.physics[i+1][2] * time_s
+
+        #print(f"New Pos: {self.position}   New Phys: {self.physics} ")
+        #print()
 
 
     #--------------------------------------------------------------------------

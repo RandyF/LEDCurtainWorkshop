@@ -66,10 +66,12 @@ class CurtainSprite:
     #--------------------------------------------------------------------------
     # Add Particle
     #--------------------------------------------------------------------------
-    def add_particle(self, position=None, physics=None, color=None, fade=None ):
+    def add_particle(self, position=None, physics=None, rad_physics=None, color=None, fade=None ):
 
-        new_part = CurtainParticle(position, physics, color, fade )
+        new_part = CurtainParticle(position, physics, rad_physics, color, fade )
         self.particles.append( new_part )
+
+        return new_part
 
 
 #==============================================================================
@@ -77,11 +79,16 @@ class CurtainSprite:
 #==============================================================================
 
 if __name__ == "__main__":
+    from math import pi
+
     print("Curtain Sprite Test")
 
     sprite = CurtainSprite()
 
     sprite.add_particle([30, 13, 0])
     sprite.add_particle([32, 16, 0])
+
+    sprite.add_particle(rad_physics=[[1, pi/2, 0]])
+
 
     print( sprite.pixelize() )
