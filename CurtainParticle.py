@@ -12,13 +12,15 @@
 #   20231230    AJR     Initial Draft
 #   20231231    AJR     Fixed Physics (mutable objects, learned sumthin' new)
 #                       Allow Particles to be phycially positioned in meters.
+#   20240101    AJR     Happy New Year!
+#                       Added Spherical Physics Option
 #
 #==============================================================================
 
 #==============================================================================
 # Package Includes
 #==============================================================================
-from math import floor
+from math import floor, sin, cos, pi
 
 #==============================================================================
 # Project Includes
@@ -43,17 +45,41 @@ class CurtainParticle:
     #--------------------------------------------------------------------------
     # Init Constructor
     #--------------------------------------------------------------------------
-    def __init__(self, position=None, physics=None, color=None, fade_rate=None ):
+    def __init__(self, position=None, physics=None, rad_physics=None, color=None, fade_rate=None ):
 
         if position is not None and len(position) < 3:
             raise Exception(f"Positition must be [x, y, z]! (gave me {position})")
         self.position = position if position is not None else [0, 0, 0]
 
         if physics is not None:
+            if rad_physics is not None:
+                raise Exception(f"You gave me both physics and rad_physics, plz pick only one.")
+            
             for newt in physics:
                 if len(newt) != 3:
                     raise Exception(f"All Physics must be [x, y, z]! (gave me {newt})")
-        self.physics = physics if physics is not None else [ [0.0,0.0,0.0], [0.0,9.8,0.0] ] 
+
+            self.physics = physics 
+                
+        elif rad_physics is not None:
+
+            self.physics = []
+
+            for newt in rad_physics:
+                if len(newt) != 3:
+                    raise Exception(f"All radPhysics must be [r, theta, rho]! (gave me {newt})")           
+
+                r, theta, rho = newt
+                y = r * sin(theta) * cos(rho)
+                z = r * sin(theta) * sin(rho)
+                x = r * cos(theta)
+
+                self.physics.append( [x, y, z] )
+
+        else:
+            self.physics = [ [0.0,0.0,0.0], [0.0,9.8,0.0] ] 
+
+        print(f"New Particle physics: {self.physics}")
 
         self.fade_rate = fade_rate if fade_rate is not None else 0
 
@@ -145,4 +171,11 @@ if __name__ == "__main__":
 
     print( particle.position, particle.pixelize() )
 
-    particle = CurtainParticle([0, 1, 0], physics=[[0, 0, 0], [0, 1]])
+
+    rad_particle = CurtainParticle(position=[0.0,0.0,0.0], rad_physics=[[1.0, 0.0, 0.0],[0.0,0.0,0.0]])
+    rad_particle = CurtainParticle(position=[0.0,0.0,0.0], rad_physics=[[1.0, pi/2, 0.0],[0.0,0.0,0.0]])
+    rad_particle = CurtainParticle(position=[0.0,0.0,0.0], rad_physics=[[1.0, pi, 0.0],[0.0,0.0,0.0]])
+    rad_particle = CurtainParticle(position=[0.0,0.0,0.0], rad_physics=[[1.0, 3*pi/2, 0.0],[0.0,0.0,0.0]])
+
+
+    #particle = CurtainParticle([0, 1, 0], physics=[[0, 0, 0], [0, 1]])
