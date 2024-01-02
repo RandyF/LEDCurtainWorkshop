@@ -12,6 +12,7 @@
 #   20231230    AJR     Initial Draft
 #   20231231    AJR     Object Init Cleanup
 #                       Allow Particles to be phycially positioned in meters.
+#   20240102    AJR     Added some attempts to understand complexity
 #
 #==============================================================================
 
@@ -22,6 +23,7 @@ from PIL import Image
 from math import ceil
 from random import random, randint
 from copy import copy
+from os import remove, rename
 #import numpy as np
 
 
@@ -31,6 +33,7 @@ from copy import copy
 from CurtainSprite import CurtainSprite
 from CurtainParticle import CurtainParticle
 
+from ComplexityAnalysis import get_gif_complexity
 
 #==============================================================================
 # Curtain Scene Class
@@ -143,6 +146,10 @@ class CurtainScene:
 
 
 
+    #--------------------------------------------------------------------------
+    # Calculate "complexity" as the number of changes between frames.
+    # I think this is the ulitmate limitation for Govee Imports
+    #--------------------------------------------------------------------------
     def calc_frame_complexity(self, frame_a, frame_b):
 
         cplx = 0
@@ -161,9 +168,8 @@ class CurtainScene:
         complxity = self.px_width * self.px_height
 
         for i, frame in enumerate(self.raw_frames):
-
             if i > 0:
-                complxity += self.calc_frame_complexity( self.raw_frames[i-1], self.raw_frames[1] )
+                complxity += self.calc_frame_complexity( self.raw_frames[i-1], self.raw_frames[i] )
 
         return complxity
 
@@ -171,11 +177,25 @@ class CurtainScene:
     #--------------------------------------------------------------------------
     # Export the current frame image array as a gif
     #--------------------------------------------------------------------------
-    def export_gif(self, output_path, duration=200, loop=0):
-
-        print("exporting ", len(self.raw_frames), "frames in ", duration, " cplx: ", self.stack_complexity() )
+    def export_gif(self, output_path, duration=200, loop=0, cplx_limit=None ):
 
 
+        if cplx_limit is not None:
+            if isinstance(cplx_limit, list):
+                c_min = cplx_limit[0]
+                c_max = cplx_limit[1]
+            else:
+                c_min = 0
+                c_max = cplx_limit
+
+
+        # if cplx_limit is not None:
+        #     stk_cplx = self.stack_complexity()
+        #     if stk_cplx > c_max or stk_cplx < c_min:
+        #         #print("Complexity over Limit!")
+        #         return False
+
+        #print(output_path, " exporting ", len(self.raw_frames), "frames in ", duration, " cplx: ", self.stack_complexity() )
 
         img_frames = []
         for i, frame in enumerate(self.raw_frames):
@@ -199,7 +219,20 @@ class CurtainScene:
             duration=duration,
             loop=loop,
         )
+        
+        gif_complexity = get_gif_complexity(output_path)
+        if cplx_limit is not None:
 
+            if gif_complexity > c_max or gif_complexity < c_min:
+                remove(output_path)
+                return False
+            else:
+                rename( output_path, "%s_%d.gif" % (output_path[:-4], gif_complexity))
+
+        print(output_path, " exported ", len(self.raw_frames), "frames in ", duration, " cplx: ", self.stack_complexity(), "/", gif_complexity)
+
+        return True
+    
 
 
 #==============================================================================
@@ -208,13 +241,13 @@ class CurtainScene:
 if __name__ == "__main__":
     print("Curtain Scene Test")
 
-    scene = CurtainScene(panels=3)
+    scene = CurtainScene(panels=1)
 
     sprite = CurtainSprite()
     scene.sprites.append( sprite )
 
     step_time = .200
-    total_time = 60.0
+    total_time = 9.0
 
     phsyics_default = [[0, 0, 0], [0, 0, 0]]
 

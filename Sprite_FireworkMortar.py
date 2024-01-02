@@ -168,10 +168,10 @@ class Sprite_FireworkMortar(CurtainSprite):
 # Stand-Alone Runtime
 #==============================================================================
 
-def CreateScene(file=r"c:/temp/govee.gif", fw_range=None):
+def CreateScene(file=r"c:/temp/govee.gif", cplx_limit=None):
 
     step_time = .200
-    total_time = 8.0
+    total_time = 9.0
 
     scene = CurtainScene(panels=1)
 
@@ -197,32 +197,24 @@ def CreateScene(file=r"c:/temp/govee.gif", fw_range=None):
         scene.run_for_time(step_time)
         elapsed += step_time
 
-    if fw_range is None:
-        scene.export_gif(file)
-        return True
-    else:
-        #print(len(scene.sprites)-1, range(fw_range[0], fw_range[1]))
-        if len(scene.sprites)-1 in range(fw_range[0], fw_range[1]):
-            print("got One!", len(scene.sprites)-1)
-            scene.export_gif(file)
-            return True
-        else:
-            #print("Not Exporting")
-            return False
-
+    return scene.export_gif(output_path=file, cplx_limit=cplx_limit)
 
 
 
 if __name__ == "__main__":
     from CurtainScene import CurtainScene
     from Sprite_Sparkles import Sprite_Sparkles
+    from ComplexityAnalysis import get_gif_complexity
+    from os import remove
 
     print("Sprite_FireworkMortar Test")
 
-    create_cnt = 0
-    while create_cnt < 10:
+    cplx_lmt = [0, 2500]
 
-        if CreateScene(file=r"c:/temp/govee_%03d.gif" % create_cnt, fw_range=[1,2]):
+    create_cnt = 0
+    while create_cnt < 1:
+        fn = r"c:/temp/govee_%03d.gif" % create_cnt
+        if CreateScene(file=fn, cplx_limit=cplx_lmt ):
             create_cnt += 1
 
-    CreateScene()
+    #CreateScene()
