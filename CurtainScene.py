@@ -43,7 +43,8 @@ class CurtainScene:
     time_step_s = None
 
     sprites = None
-    frames = None
+
+    raw_frames = None
 
 
     #--------------------------------------------------------------------------
@@ -51,7 +52,7 @@ class CurtainScene:
     #--------------------------------------------------------------------------
     def __init__(self, panels=3, time_step_s=None ):
         self.sprites = []
-        self.frames = []
+        self.raw_frames = []
 
         self.px_width, self.px_height = panels*20, 26
         self.phys_width, self.phys_height = panels*1.47, 1.85
@@ -138,14 +139,33 @@ class CurtainScene:
 
             frame_pixels[cur_y][cur_x] = [cur_r, cur_g, cur_b, 255]
 
+        self.raw_frames.append(frame_pixels)
 
-        #fully unroll the frame
-        flat_pixels = [element for row in frame_pixels for element in row]
-        framedat = [element for row in flat_pixels for element in row]
-                
-        frame_image = Image.frombytes("RGBA", (self.px_width, self.px_height), bytes(framedat) )
 
-        self.frames.append(frame_image)
+
+    def calc_frame_complexity(self, frame_a, frame_b):
+
+        cplx = 0
+
+        for y, row in enumerate(frame_a):
+            for x, element in enumerate(row):
+
+                if element != frame_b[y][x]:
+                    cplx += 1
+        
+        return cplx
+
+
+    def stack_complexity(self):
+
+        complxity = self.px_width * self.px_height
+
+        for i, frame in enumerate(self.raw_frames):
+
+            if i > 0:
+                complxity += self.calc_frame_complexity( self.raw_frames[i-1], self.raw_frames[1] )
+
+        return complxity
 
 
     #--------------------------------------------------------------------------
@@ -153,18 +173,29 @@ class CurtainScene:
     #--------------------------------------------------------------------------
     def export_gif(self, output_path, duration=200, loop=0):
 
-        print("exporting ", len(self.frames), "frames", duration)
+        print("exporting ", len(self.raw_frames), "frames in ", duration, " cplx: ", self.stack_complexity() )
 
-        # for i, frame in enumerate(self.frames):
-        #     frame.save(f"c:/temp/frame_{i}.png")
+
+
+        img_frames = []
+        for i, frame in enumerate(self.raw_frames):
+
+            #fully unroll the frame
+            flat_pixels = [element for row in frame for element in row]
+            framedat = [element for row in flat_pixels for element in row]
+                    
+            frame_image = Image.frombytes("RGBA", (self.px_width, self.px_height), bytes(framedat) )
+
+            img_frames.append(frame_image)
+
 
         # Save the animated GIF
-        self.frames[0].save(
+        img_frames[0].save(
             output_path,
             save_all=True,
             format='gif', 
             optimize=False,
-            append_images=self.frames[1:],
+            append_images=img_frames[1:],
             duration=duration,
             loop=loop,
         )
