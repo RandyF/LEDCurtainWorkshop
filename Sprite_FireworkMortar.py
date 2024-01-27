@@ -41,6 +41,13 @@ class Sprite_FireworkMortar(CurtainSprite):
     trail_color = None
     star_color = None
 
+    _pop_shell_func = None
+
+    _chrysanthemum_num_stars=12
+    _chrysanthemum_num_rings=3
+    _chrysanthemum_power=0.3
+
+    _launch_angle = None
 
     #--------------------------------------------------------------------------
     # Init and Constructor
@@ -60,8 +67,6 @@ class Sprite_FireworkMortar(CurtainSprite):
 
         if star_color is not None:
             self.star_color = star_color
-        else:
-            self.star_color = choice(self.star_colors)
 
         if power is not None:
             self.power = power
@@ -70,6 +75,8 @@ class Sprite_FireworkMortar(CurtainSprite):
                 self.power = uniform(pow_rng[0], pow_rng[0] )
             else:
                 self.power = 0.5
+
+        self._pop_shell_func = self.pop_chrysanthemum
 
         self.launch_mortar(pos_x=pos_x, theta=theta)
 
@@ -94,32 +101,39 @@ class Sprite_FireworkMortar(CurtainSprite):
 
 
         new_pos = [p_x, 0.0, 0.0]
-        new_phys = [[self.power, th, 0], [self.gravity, -pi/2, 0]]
+        self._launch_physics = [[self.power, th, 0], [self.gravity, -pi/2, 0]]
         new_color = [64, 64, 64, 255]
         new_fade = 0.0
 
-        self.shell_particle = self.add_particle(position=new_pos, rad_physics=new_phys, color=new_color, fade=new_fade )
 
+        self.shell_particle = self.add_particle(position=new_pos, rad_physics=self._launch_physics, color=new_color, fade=new_fade )
+
+        
 
     #--------------------------------------------------------------------------
     # Pops the Shell to Create Stars
     #--------------------------------------------------------------------------
-    def pop_shell(self, position, color=None, num_stars=12, num_rings=3, power=0.3 ):
+    def pop_chrysanthemum(self, position):
         #print("POP")
 
         self.add_particle(position=position, rad_physics=[[0,0,0],[0,0,0]], color=[255, 255, 255, 255], fade=2 )
+
+        if self.star_color is not None:
+            new_color = self.star_color
+        else:
+            new_color = choice(self.star_colors)
 
         new_pos = [position[0], position[1], position[2]]
 
         new_fade = 0.8
 
-        rad_step = 2 * pi / num_stars
+        rad_step = 2 * pi / self._chrysanthemum_num_stars
 
-        pow_step = power / num_rings
+        pow_step = self._chrysanthemum_power / self._chrysanthemum_num_rings
 
-        for ring in range(num_rings):
-            for th in range( ceil(num_stars - ring * (num_stars/(num_rings+1))) ):
-                self.stars.append( self.add_star(new_pos, (power - (pow_step * ring)), th * rad_step, self.star_color, new_fade ) )
+        for ring in range(self._chrysanthemum_num_rings):
+            for th in range( ceil(self._chrysanthemum_num_stars - ring * (self._chrysanthemum_num_stars/(self._chrysanthemum_num_rings+1))) ):
+                self.stars.append( self.add_star(new_pos, (self._chrysanthemum_power - (pow_step * ring)), th * rad_step, self.star_color, new_fade ) )
             
 
     #--------------------------------------------------------------------------
@@ -147,7 +161,7 @@ class Sprite_FireworkMortar(CurtainSprite):
 
             if v_y <= 0:
                 
-                self.pop_shell(position=self.shell_particle.position)
+                self._pop_shell_func(position=self.shell_particle.position)
 
                 self.shell_particle = None
                 del self.particles[0]
@@ -179,20 +193,20 @@ def CreateScene(file=r"c:/temp/govee.gif", cplx_limit=None):
     scene.sprites.append( sparkles )
 
 #    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=1*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
-#    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=2*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
+    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=2*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
 #    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size, pos_x=3*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255] ) )
 #    scene.run_for_time(8)
 
-    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
+#    scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
 
     elapsed = 0
     for _ in range( int(total_time/step_time) ):
 
-        if random() > 0.9 and elapsed < (total_time - 7.0):
-            scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
+        # if random() > 0.9 and elapsed < (total_time - 7.0):
+        #     scene.sprites.append( Sprite_FireworkMortar( size_m=scene.phys_size ) )
 
-        if random() > 0.85:
-            sparkles.add_sparkle()
+        # if random() > 0.85:
+        #     sparkles.add_sparkle()
 
         scene.run_for_time(step_time)
         elapsed += step_time

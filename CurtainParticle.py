@@ -41,6 +41,8 @@ class CurtainParticle:
 
     fade_rate = None # Percent per Second (normalized)
 
+    black_thresh = 32
+
 
     #--------------------------------------------------------------------------
     # Init Constructor
@@ -123,6 +125,9 @@ class CurtainParticle:
         self.color = [element * fade_mult for element in self.color]
         #print(self.color)
 
+        for i, clr in enumerate(self.color):
+            if self.color[i] < self.black_thresh:
+                self.color[i] = 0
 
     #--------------------------------------------------------------------------
     # Performs the Pixel Time Step
