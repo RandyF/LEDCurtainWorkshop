@@ -125,9 +125,9 @@ class CurtainParticle:
         self.color = [element * fade_mult for element in self.color]
         #print(self.color)
 
-        for i, clr in enumerate(self.color):
-            if self.color[i] < self.black_thresh:
-                self.color[i] = 0
+        # for i, clr in enumerate(self.color):
+        #     if self.color[i] < self.black_thresh:
+        #         self.color[i] = 0
 
     #--------------------------------------------------------------------------
     # Performs the Pixel Time Step

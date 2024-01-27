@@ -45,7 +45,7 @@ class Sprite_FireworkMortar(CurtainSprite):
 
     _chrysanthemum_num_stars=12
     _chrysanthemum_num_rings=3
-    _chrysanthemum_power=0.3
+    _shell_power=0.3
 
     _launch_angle = None
 
@@ -129,11 +129,11 @@ class Sprite_FireworkMortar(CurtainSprite):
 
         rad_step = 2 * pi / self._chrysanthemum_num_stars
 
-        pow_step = self._chrysanthemum_power / self._chrysanthemum_num_rings
+        pow_step = self._shell_power / self._chrysanthemum_num_rings
 
         for ring in range(self._chrysanthemum_num_rings):
             for th in range( ceil(self._chrysanthemum_num_stars - ring * (self._chrysanthemum_num_stars/(self._chrysanthemum_num_rings+1))) ):
-                self.stars.append( self.add_star(new_pos, (self._chrysanthemum_power - (pow_step * ring)), th * rad_step, self.star_color, new_fade ) )
+                self.stars.append( self.add_star(new_pos, (self._shell_power - (pow_step * ring)), th * rad_step, self.star_color, new_fade ) )
             
 
     #--------------------------------------------------------------------------
