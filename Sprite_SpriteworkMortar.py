@@ -3,6 +3,9 @@
 #   Project:    LEDCurtainWorkshop
 #   File:       Sprite_SpriteworkMortar.py
 #
+#
+#   Sprite Firework Mapper: https://docs.google.com/spreadsheets/d/1XrHpz7iX1Ztjd464Wb-ifAtPoROtgfNblLTXHyaXsA4/edit?usp=sharing
+#
 #   Author:     Andy Ressa
 #   email:      aressa@angrykitten.com
 #   Created:    20240101
