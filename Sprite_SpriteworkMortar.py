@@ -33,7 +33,7 @@ from Sprite_FireworkMortar import Sprite_FireworkMortar
 class Sprite_SpriteworkMortar(Sprite_FireworkMortar):
 
     _spritework_star_map = None
-    _spritework_gravity = 0.2
+    _spritework_gravity = None
 
 
     #--------------------------------------------------------------------------
@@ -145,7 +145,12 @@ def CreateScene(file=r"c:/temp/govee.gif", cplx_limit=None, star_map=None):
 #    scene.sprites.append( Sprite_SpriteworkMortar( size_m=scene.phys_size, pos_x=3*scene.phys_size[0]/4, theta=pi/2, star_color=[255, 100, 255, 255], trail_color=[255, 96, 128, 255], spritemap=star_map ) )
 #    scene.run_for_time(8)
 
-    scene.sprites.append( Sprite_SpriteworkMortar( size_m=scene.phys_size, spritemap=star_map, pow_rng=[0.6, 0.8] ) )
+    scene.sprites.append( Sprite_SpriteworkMortar( size_m=scene.phys_size, pos_x=2/20*scene.phys_size[0], theta=6.7/16*pi,
+                                                   star_color=[255, 255, 255, 255], trail_color='rainbow',
+                                                   spritemap=star_map, pow_rng=[0.7, 0.7], sprite_grav=0.10, sprite_pow=0.03 ) )
+
+
+#    scene.sprites.append( Sprite_SpriteworkMortar( size_m=scene.phys_size, spritemap=star_map, pow_rng=[0.7, 0.7] ) )
 
     elapsed = 0
     for _ in range( int(total_time/step_time) ):
@@ -170,6 +175,24 @@ lovework_map = [ [0, 3, None], [1, 4, None], [2, 5, None], [3, 5, None], [4, 5, 
             [-4, -1, None], [-3, -2, None], [-2, -3, None], [-1, -4, None] ]
 
 
+G = [0, 0, 0, 0]
+g = [0, 255, 0, 255] 
+color_green_03 = [0, 0, 0, 0]
+
+shamwork_map = [  					[ -2, 7, g],	[ -1, 7, g],		[ 1, 7, g],	[ 2, 7, g],					
+				[ -3, 6, g],			[ 0, 6, g],			[ 3, 6, g],				
+				[ -3, 5, g],						[ 3, 5, g],				
+					[ -2, 4, g],				[ 2, 4, g],					
+	[ -6, 3, g],	[ -5, 3, g],				[ -1, 3, g],		[ 1, 3, g],				[ 5, 3, g],	[ 6, 3, g],	
+[ -7, 2, g],			[ -4, 2, g],				[ 0, 2, g],				[ 4, 2, g],			[ 7, 2, g],
+[ -7, 1, g],				[ -3, 1, g],						[ 3, 1, g],				[ 7, 1, g],
+	[ -6, 0, g],				[ -2, 0, g],				[ 2, 0, g],				[ 6, 0, g],	
+[ -7, -1, g],				[ -3, -1, g],			[ 0, -1, g],			[ 3, -1, g],				[ 7, -1, g],
+[ -7, -2, g],			[ -4, -2, g],				[ 0, -2, g],				[ 4, -2, g],			[ 7, -2, g],
+	[ -6, -3, g],	[ -5, -3, g],					[ 0, -3, g],					[ 5, -3, g],	[ 6, -3, g],	
+						[ -1, -4, g],								
+						[ -1, -5, g],										 ]	
+
 
 if __name__ == "__main__":
     from CurtainScene import CurtainScene
@@ -179,12 +202,12 @@ if __name__ == "__main__":
 
     print("Sprite_SpriteworkMortar Test")
 
-    cplx_lmt = [0, 2000]
+    cplx_lmt = [0, 20000]
 
     create_cnt = 0
-    while create_cnt < 10:
+    while create_cnt < 1:
         fn = r"c:/temp/govee_SpriteworkMortar_%03d.gif" % create_cnt
-        if CreateScene(file=fn, cplx_limit=cplx_lmt ):
+        if CreateScene(file=fn, cplx_limit=cplx_lmt, star_map=shamwork_map ):
             create_cnt += 1
 
     #CreateScene()

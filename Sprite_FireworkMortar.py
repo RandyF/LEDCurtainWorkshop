@@ -24,6 +24,34 @@ from random import random, randint, uniform, choice
 #==============================================================================
 from CurtainSprite import CurtainSprite
 
+
+
+
+import colorsys
+
+def hsv_to_rgb(h, s, v, a):
+
+    h %= 360.0
+    if h < 0.0:
+        h += 360.0
+
+    # Convert HSV values to the range expected by colorsys (0-1)
+    h /= 360.0
+    s /= 100.0
+    v /= 100.0
+
+    # Convert HSV to RGB
+    r, g, b = colorsys.hsv_to_rgb(h, s, v)
+
+    # Scale RGB values to the range 0-255 and round to integers
+    r = int(r * 255.0)
+    g = int(g * 255.0)
+    b = int(b * 255.0)
+
+
+    return [r, g, b, a]
+
+
 #==============================================================================
 # Sparkle Effects
 #==============================================================================
@@ -39,6 +67,8 @@ class Sprite_FireworkMortar(CurtainSprite):
     star_colors = [[255, 32, 32, 255], [255, 32, 32, 255], [255, 32, 32, 255], [255, 100, 32, 255], [255, 100, 255, 255]]
   
     trail_color = None
+    trail_hsv_angle = None
+    hsv_angle_step = None
     star_color = None
 
     _pop_shell_func = None
@@ -59,11 +89,14 @@ class Sprite_FireworkMortar(CurtainSprite):
             raise Exception(f"size_m must be [x_m, y_m]! (gave me {size_m})")
         self.size_m = size_m if size_m is not None else [1, 1]
 
+        if trail_color == 'rainbow':
+            self.trail_color = 'rainbow'
+            self.trail_hsv_angle = 245
+            self.hsv_angle_step = -15
         if trail_color is not None:
             self.trail_color = trail_color
         else:
-            if random() > 0.75:
-                self.trail_color = [255, 200, 0, 255]
+            self.trail_color = None
 
         if star_color is not None:
             self.star_color = star_color
@@ -152,9 +185,13 @@ class Sprite_FireworkMortar(CurtainSprite):
     def do_timestep(self, time_s ):
         super().do_timestep(time_s)  # Do the physics first
 
+
         if self.shell_particle is not None:
 
-            if self.trail_color is not None:
+            if self.trail_color == 'rainbow':
+                self.trail_hsv_angle += self.hsv_angle_step
+                self.add_star(self.shell_particle.position, .05, 2 * pi * random(), hsv_to_rgb(self.trail_hsv_angle, 100, 100, 255), 1 )         
+            elif self.trail_color is not None:           
                 self.add_star(self.shell_particle.position, .05, 2 * pi * random(), self.trail_color, 1 )
 
             v_x, v_y, v_z = self.shell_particle.physics[0]
